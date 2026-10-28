@@ -1,0 +1,81 @@
+﻿@page
+@model VaSocApp_System.Pages.Chairperson.ReportsModel
+@{
+    Layout = "_ChairpersonLayout";
+    ViewData["Title"] = "Society Reports";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>Society Overview: @Model.SocietyName</h4>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 border-start border-primary border-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">Active Members</h6>
+                        <h2 class="mb-0 fw-bold text-primary">@Model.ActiveMemberCount</h2>
+                    </div>
+                    <i class="bi bi-people-fill text-primary" style="font-size: 2.5rem;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 border-start border-success border-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">Announcements</h6>
+                        <h2 class="mb-0 fw-bold text-success">@Model.AnnouncementCount</h2>
+                    </div>
+                    <i class="bi bi-megaphone-fill text-success" style="font-size: 2.5rem;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 border-start border-warning border-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-1">Meetings Held</h6>
+                        <h2 class="mb-0 fw-bold text-warning">@Model.MeetingCount</h2>
+                    </div>
+                    <i class="bi bi-calendar-check-fill text-warning" style="font-size: 2.5rem;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Updates List -->
+<div class="card shadow-sm">
+    <div class="card-header bg-white">
+        <h5 class="mb-0 text-primary"><i class="bi bi-clock-history"></i> Recent Secretary Updates</h5>
+    </div>
+    <div class="card-body">
+        @if (!Model.RecentUpdates.Any())
+        {
+            <p class="text-muted text-center py-3">No recent updates or announcements from the Secretary.</p>
+        }
+        else
+        {
+            <div class="list-group list-group-flush">
+                @foreach (var item in Model.RecentUpdates)
+                {
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1 fw-bold">@item.Title</h6>
+                            <small class="text-muted">@item.DatePosted.ToString("dd MMM yyyy")</small>
+                        </div>
+                        <p class="mb-1 text-muted">@item.Message</p>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

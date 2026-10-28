@@ -1,0 +1,32 @@
+﻿@page "{id:int}"
+@model VaSocApp_System.Pages.Secretary.EditAnnouncementModel
+@{
+    Layout = "_SecretaryLayout";
+    ViewData["Title"] = "Edit Announcement";
+}
+
+<h4>Edit Announcement</h4>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">@Model.SuccessMessage</div>
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="post">
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label fw-bold">Title</label>
+                <input asp-for="Title" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Message" class="form-label fw-bold">Message / Details</label>
+                <textarea asp-for="Message" class="form-control" rows="5" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update Announcement</button>
+            <a asp-page="/Secretary/Announcements" class="btn btn-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>

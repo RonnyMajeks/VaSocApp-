@@ -1,0 +1,270 @@
+﻿@page
+@model VaSocApp_System.Pages.IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<style>
+    
+    .hero-morph {
+        position: relative;
+        background: #000;
+        color: white;
+        padding: 120px 0;
+        overflow: hidden;
+        min-height: 600px;
+        display: flex;
+        align-items: center;
+    }
+
+        .hero-morph::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/images/cput.jfif');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.7;
+            animation: morphBackground 20s infinite;
+            z-index: 0;
+        }
+
+        .hero-morph::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 0;
+        }
+
+        .hero-morph .container {
+            position: relative;
+            z-index: 1;
+        }
+
+    
+    .about-image {
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        max-height: 450px;
+        object-fit: cover;
+        width: 100%;
+        transition: transform 0.3s ease;
+    }
+
+        .about-image:hover {
+            transform: scale(1.02);
+        }
+</style>
+
+
+<section class="hero-morph">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Welcome to VaSocApp</h1>
+                <p class="lead mb-4" style="font-size: 1.3rem;">Your gateway to vibrant campus life. Discover societies, join events, and connect with fellow students.</p>
+                <div class="d-flex gap-3">
+                    <a asp-page="/Login" class="btn btn-light btn-lg px-5 py-3 fw-bold" style="border-radius: 50px;">
+                        <i class="bi bi-box-arrow-in-right"></i> Get Started
+                    </a>
+                    <a href="#features" class="btn btn-outline-light btn-lg px-5 py-3" style="border-radius: 50px;">
+                        Learn More
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center mt-5 mt-lg-0 d-none d-lg-block">
+                <i class="bi bi-people-fill" style="font-size: 200px; opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5" style="background-color: #f8f9fa;">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 mb-4">
+                <div class="p-4">
+                    <i class="bi bi-people-fill text-primary" style="font-size: 3rem;"></i>
+                    <h3 class="fw-bold mt-3">@(Model.TotalStudents.ToString("N0"))</h3>
+                    <p class="text-muted">Registered Students</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="p-4">
+                    <i class="bi bi-flag-fill text-success" style="font-size: 3rem;"></i>
+                    <h3 class="fw-bold mt-3">@Model.TotalSocieties</h3>
+                    <p class="text-muted">Active Societies</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="p-4">
+                    <i class="bi bi-calendar-event-fill text-warning" style="font-size: 3rem;"></i>
+                    <h3 class="fw-bold mt-3">@Model.TotalEvents</h3>
+                    <p class="text-muted">Scheduled Events</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="p-4">
+                    <i class="bi bi-mortarboard-fill text-danger" style="font-size: 3rem;"></i>
+                    <h3 class="fw-bold mt-3">@Model.TotalCampuses</h3>
+                    <p class="text-muted">Campuses</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section id="features" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Why Choose VaSocApp?</h2>
+            <p class="lead text-muted">Everything you need to enhance your university experience</p>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-search text-primary" style="font-size: 3rem;"></i>
+                        <h5 class="fw-bold mt-3">Discover Societies</h5>
+                        <p class="text-muted">Browse and explore diverse societies based on your interests and campus.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-handshake text-success" style="font-size: 3rem;"></i>
+                        <h5 class="fw-bold mt-3">Join & Connect</h5>
+                        <p class="text-muted">Become a member of your favorite societies and build lasting friendships.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-calendar-check text-warning" style="font-size: 3rem;"></i>
+                        <h5 class="fw-bold mt-3">RSVP to Events</h5>
+                        <p class="text-muted">Never miss a meeting, workshop, or social gathering again.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-megaphone text-danger" style="font-size: 3rem;"></i>
+                        <h5 class="fw-bold mt-3">Stay Informed</h5>
+                        <p class="text-muted">Get instant announcements and updates from your societies.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-person-badge text-info" style="font-size: 3rem;"></i>
+                        <h5 class="fw-bold mt-3">Track Progress</h5>
+                        <p class="text-muted">Monitor your involvement and achievements across societies.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-shield-check text-secondary" style="font-size: 3rem;"></i>
+                        <h5 class="fw-bold mt-3">Secure Platform</h5>
+                        <p class="text-muted">Your data is protected with enterprise-grade security.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section id="about" class="py-5" style="background-color: #f8f9fa;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                
+                <img src="/images/family.jfif" alt="Family" class="about-image" />
+            </div>
+            <div class="col-lg-6">
+                <h2 class="fw-bold mb-4">About VaSocApp</h2>
+                <p class="lead">VaSocApp is the official Varsity Society Activities Portal for Universities across South Africa.</p>
+                <p>Our mission is to enhance student engagement by providing a centralized platform where students can discover, join, and actively participate in society activities across all campuses.</p>
+                <p>Whether you're looking to develop leadership skills, make new friends, or pursue your passions, VaSocApp connects you with opportunities that enrich your university experience.</p>
+                <a asp-page="/Login" class="btn btn-primary btn-lg mt-3" style="border-radius: 50px;">
+                    Join Now <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-4">Ready to Get Involved?</h2>
+        <p class="lead mb-4">Join @(Model.TotalStudents.ToString("N0")) students who are already making the most of their university experience.</p>
+        <a asp-page="/Login" class="btn btn-light btn-lg px-5 py-3 fw-bold" style="border-radius: 50px;">
+            <i class="bi bi-box-arrow-in-right"></i> Sign In to Your Account
+        </a>
+    </div>
+</section>
+
+
+<section id="contact" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Get in Touch</h2>
+            <p class="lead text-muted">Have questions? We're here to help!</p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-5">
+                        <div class="row text-center">
+                            <div class="col-md-4 mb-4">
+                                <i class="bi bi-envelope-fill text-primary" style="font-size: 2.5rem;"></i>
+                                <h6 class="fw-bold mt-3">Email Us</h6>
+                                <p class="text-muted small">info@vasocapp.co.za</p>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <i class="bi bi-telephone-fill text-success" style="font-size: 2.5rem;"></i>
+                                <h6 class="fw-bold mt-3">Call Us</h6>
+                                <p class="text-muted small">+27 47 502 1000</p>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <i class="bi bi-geo-alt-fill text-danger" style="font-size: 2.5rem;"></i>
+                                <h6 class="fw-bold mt-3">Visit Us</h6>
+                                <p class="text-muted small">Walter Sisulu University</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    const style = document.createElement('style');
+    style.textContent = `
+        @@keyframes morphBackground {
+            0%   { background-image: url('/images/cput.jfif'); }
+            25%  { background-image: url('/images/iws.jfif'); }
+            50%  { background-image: url('/images/ufh.jfif'); }
+            75%  { background-image: url('/images/nmu.jfif'); }
+            100% { background-image: url('/images/cput.jfif'); }
+        }
+    `;
+    document.head.appendChild(style);
+</script>

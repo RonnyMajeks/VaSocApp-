@@ -1,0 +1,192 @@
+﻿@{
+    var fullName = Context.Session.GetString("FullName") ?? "User";
+    var username = ViewData["Username"]?.ToString() ?? Context.Session.GetString("Username") ?? "User";
+    var email = ViewData["Email"]?.ToString() ?? "N/A";
+    var university = ViewData["UniversityName"]?.ToString();
+    var campus = ViewData["CampusName"]?.ToString();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - VaSocApp</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+    <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #f4f6f9;
+            }
+
+            .top-navbar {
+                background: linear-gradient(135deg, #6f42c1 0%, #4e2a84 100%);
+                color: white;
+                padding: 10px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 56px;
+                z-index: 1000;
+            }
+
+            .brand {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-weight: 700;
+                color: white;
+                text-decoration: none;
+            }
+
+            .brand-logo {
+                width: 32px;
+                height: 32px;
+                background: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #6f42c1;
+                font-weight: bold;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 56px;
+                left: 0;
+                bottom: 0;
+                width: 240px;
+                background: linear-gradient(180deg, #2d1b4e 0%, #1a0f2e 100%);
+                color: #cdd5dc;
+                overflow-y: auto;
+                padding-top: 10px;
+            }
+
+                .sidebar a {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 12px 20px;
+                    color: #cdd5dc;
+                    text-decoration: none;
+                    border-left: 3px solid transparent;
+                }
+
+                    .sidebar a:hover {
+                        background-color: rgba(255,255,255,0.08);
+                        color: white;
+                        border-left-color: #9d7bf0;
+                    }
+
+                .sidebar i {
+                    font-size: 16px;
+                    width: 20px;
+                    text-align: center;
+                }
+
+            .menu-header {
+                padding: 15px 20px 5px;
+                font-size: 11px;
+                text-transform: uppercase;
+                color: #8899a6;
+                font-weight: 600;
+            }
+
+            .main-content {
+                margin-left: 240px;
+                margin-top: 56px;
+                padding: 25px;
+            }
+
+            .profile-dropdown {
+                min-width: 280px;
+                padding: 15px;
+            }
+
+            .profile-header {
+                border-bottom: 1px solid #dee2e6;
+                padding-bottom: 10px;
+                margin-bottom: 10px;
+            }
+
+            .profile-info-row {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 8px;
+                font-size: 0.9rem;
+            }
+
+            .profile-label {
+                font-weight: 600;
+                color: #adb5bd;
+            }
+
+            .profile-value {
+                color: #f8f9fa;
+                text-align: right;
+                max-width: 60%;
+                word-break: break-word;
+            }
+
+            .logout-btn {
+                width: 100%;
+                margin-top: 10px;
+            }
+    </style>
+</head>
+<body>
+    <div class="top-navbar">
+        <a class="brand" asp-page="/StudentAffairs/StudentAffairsDashboard">
+            <div class="brand-logo">V</div> VaSocApp
+        </a>
+        <div class="dropdown">
+            <a class="text-white text-decoration-none dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-circle"></i> @fullName
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end profile-dropdown" style="background-color: #2d1b4e; color: white; border: 1px solid #4e2a84;">
+                <li class="profile-header">
+                    <h6 class="mb-0"><i class="bi bi-person-badge"></i> Profile Information</h6>
+                </li>
+                <li><div class="profile-info-row"><span class="profile-label">Username:</span><span class="profile-value">@username</span></div></li>
+                <li><div class="profile-info-row"><span class="profile-label">Email:</span><span class="profile-value">@email</span></div></li>
+                @if (!string.IsNullOrEmpty(university))
+                {
+                    <li><div class="profile-info-row"><span class="profile-label">University:</span><span class="profile-value">@university</span></div></li>
+                }
+                @if (!string.IsNullOrEmpty(campus))
+                {
+                    <li><div class="profile-info-row"><span class="profile-label">Campus:</span><span class="profile-value">@campus</span></div></li>
+                }
+                <li><hr class="dropdown-divider" style="border-color: #4e2a84;"></li>
+                <li>
+                    <form method="post" asp-page="/Logout" class="d-inline">
+                        <button type="submit" class="btn btn-danger btn-sm logout-btn"><i class="bi bi-box-arrow-right"></i> Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <a asp-page="/StudentAffairs/StudentAffairsDashboard"><i class="bi bi-house-door"></i> Home</a>
+        <div class="menu-header">Management</div>
+        <a asp-page="/StudentAffairs/MyProfile"><i class="bi bi-person-badge"></i> My Profile</a>
+        <a asp-page="/StudentAffairs/Societies"><i class="bi bi-diagram-3"></i> Societies</a>
+        <a asp-page="/StudentAffairs/Budgets"><i class="bi bi-cash-stack"></i> Budgets</a>
+        <a asp-page="/StudentAffairs/Announcements"><i class="bi bi-megaphone"></i> Announcements</a>
+        <a asp-page="/StudentAffairs/Reports"><i class="bi bi-graph-up"></i> Reports</a>
+    </div>
+
+    <div class="main-content">
+        @RenderBody()
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

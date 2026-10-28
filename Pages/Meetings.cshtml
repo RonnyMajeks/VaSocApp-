@@ -1,0 +1,41 @@
+﻿@page
+@model VaSocApp_System.Pages.MeetingsModel
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Meetings";
+}
+
+<h4>Upcoming Meetings</h4>
+
+@if (!Model.MeetingsList.Any())
+{
+    <div class="alert alert-info">There are no scheduled meetings at the moment.</div>
+}
+else
+{
+    <div class="list-group">
+        @foreach (var item in Model.MeetingsList)
+        {
+            <div class="list-group-item list-group-item-action mb-3 shadow-sm">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1 text-primary">@item.Title</h5>
+                    <small class="text-muted">
+                        @if (item.Schedule.HasValue)
+                        {
+                            @item.Schedule.Value.ToString("dd MMM yyyy")
+                        }
+                        else
+                        {
+                            @("Date TBA")
+                        }
+                    </small>
+                </div>
+                <h6 class="mb-1 text-muted">Hosted by: @(item.Society != null ? item.Society.SocietyName : "Unknown Society")</h6>
+                <p class="mb-1">@item.Description</p>
+                <small class="text-muted">
+                    <strong>Time:</strong> @(item.MeetingTime ?? "Time TBA")
+                </small>
+            </div>
+        }
+    </div>
+}

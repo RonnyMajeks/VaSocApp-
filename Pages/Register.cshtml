@@ -1,0 +1,266 @@
+﻿@page
+@model VaSocApp_System.Pages.RegisterModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Student Registration - VaSocApp";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+    <style>
+            body {
+                background: linear-gradient(135deg, #2c4a52 0%, #1a3a4a 100%);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                padding: 20px 0;
+            }
+
+            .register-card {
+                background-color: #ffffff;
+                border-radius: 12px;
+                padding: 35px 40px;
+                width: 100%;
+                max-width: 600px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            }
+
+            .logo-box {
+                width: 50px;
+                height: 50px;
+                background-color: #8a1a2a;
+                border-radius: 10px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+
+            .page-title {
+                font-size: 22px;
+                font-weight: 700;
+                color: #1a1a1a;
+                margin-bottom: 5px;
+            }
+
+            .page-subtitle {
+                color: #6c757d;
+                font-size: 14px;
+                margin-bottom: 25px;
+            }
+
+            .form-label {
+                font-size: 13px;
+                font-weight: 600;
+                color: #495057;
+            }
+
+            .form-control, .form-select {
+                border-radius: 6px;
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+
+                .form-control:focus, .form-select:focus {
+                    border-color: #8a1a2a;
+                    box-shadow: 0 0 0 3px rgba(138, 26, 42, 0.15);
+                }
+
+            .btn-register {
+                background-color: #8a1a2a;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                padding: 12px;
+                font-size: 16px;
+                font-weight: 600;
+                width: 100%;
+                margin-top: 10px;
+            }
+
+                .btn-register:hover {
+                    background-color: #6d1422;
+                    color: white;
+                }
+
+            .auth-link {
+                text-align: center;
+                margin-top: 20px;
+                font-size: 14px;
+            }
+
+                .auth-link a {
+                    color: #8a1a2a;
+                    text-decoration: none;
+                    font-weight: 600;
+                }
+
+                    .auth-link a:hover {
+                        text-decoration: underline;
+                    }
+
+            .alert-custom {
+                font-size: 14px;
+                border-radius: 6px;
+            }
+
+            .validation-message {
+                font-size: 12px;
+                margin-top: 4px;
+            }
+    </style>
+</head>
+<body>
+    <div class="register-card">
+        <div class="text-center">
+            <div class="logo-box">V</div>
+            <div class="page-title">Student Registration</div>
+            <div class="page-subtitle">Create your account to join campus societies</div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+        {
+            <div class="alert alert-success alert-custom">
+                <i class="bi bi-check-circle"></i> @Model.SuccessMessage
+                <a asp-page="/Login" class="alert-link">Click here to Login</a>
+            </div>
+        }
+
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-custom"></div>
+
+        <form method="post">
+            <h6 class="fw-bold text-muted mb-3 border-bottom pb-2">Personal Information</h6>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label asp-for="FirstName" class="form-label">First Name *</label>
+                    <input asp-for="FirstName" class="form-control" pattern="[A-Za-z\s]+" title="Only letters and spaces allowed" required />
+                    <span asp-validation-for="FirstName" class="text-danger validation-message"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="LastName" class="form-label">Last Name *</label>
+                    <input asp-for="LastName" class="form-control" pattern="[A-Za-z\s]+" title="Only letters and spaces allowed" required />
+                    <span asp-validation-for="LastName" class="text-danger validation-message"></span>
+                </div>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label asp-for="StudentNumber" class="form-label">Student Number *</label>
+                    <input asp-for="StudentNumber" class="form-control" placeholder="e.g., 230589456" pattern="\d{9,10}" title="Must be 9 or 10 digits" required />
+                    <div class="form-text small text-muted">This will be your username and email prefix.</div>
+                    <span asp-validation-for="StudentNumber" class="text-danger validation-message"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Phone" class="form-label">Phone Number</label>
+                    <input asp-for="Phone" class="form-control" placeholder="e.g., 0721234567" pattern="\d{10}" title="Must be exactly 10 digits" />
+                    <span asp-validation-for="Phone" class="text-danger validation-message"></span>
+                </div>
+            </div>
+
+            <h6 class="fw-bold text-muted mb-3 border-bottom pb-2 mt-4">Academic Details</h6>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label asp-for="UniversityId" class="form-label">University *</label>
+                    <select asp-for="UniversityId" class="form-select" required onchange="filterCampuses(this.value)">
+                        <option value="">-- Select University --</option>
+                        @foreach (var uni in Model.Universities)
+                        {
+                            <option value="@uni.Univid" selected="@(Model.UniversityId == uni.Univid)">@uni.Uniname</option>
+                        }
+                    </select>
+                    <span asp-validation-for="UniversityId" class="text-danger validation-message"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="CampusId" class="form-label">Campus</label>
+                    <select asp-for="CampusId" class="form-select">
+                        <option value="">-- Select Campus --</option>
+                        @foreach (var campus in Model.Campuses)
+                        {
+                            <option value="@campus.CampusId" selected="@(Model.CampusId == campus.CampusId)">@campus.CampusName</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CampusId" class="text-danger validation-message"></span>
+                </div>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label asp-for="FacultyId" class="form-label">Faculty</label>
+                    <select asp-for="FacultyId" class="form-select">
+                        <option value="">-- Select Faculty --</option>
+                        @foreach (var fac in Model.Faculties)
+                        {
+                            <option value="@fac.FacultyId" selected="@(Model.FacultyId == fac.FacultyId)">@fac.FacultyName</option>
+                        }
+                    </select>
+                    <span asp-validation-for="FacultyId" class="text-danger validation-message"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="YearOfStudy" class="form-label">Year of Study</label>
+                    <select asp-for="YearOfStudy" class="form-select">
+                        <option value="">-- Year --</option>
+                        <option value="1" selected="@(Model.YearOfStudy == 1)">1st Year</option>
+                        <option value="2" selected="@(Model.YearOfStudy == 2)">2nd Year</option>
+                        <option value="3" selected="@(Model.YearOfStudy == 3)">3rd Year</option>
+                        <option value="4" selected="@(Model.YearOfStudy == 4)">4th Year</option>
+                    </select>
+                    <span asp-validation-for="YearOfStudy" class="text-danger validation-message"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="CultureId" class="form-label">Culture</label>
+                    <select asp-for="CultureId" class="form-select">
+                        <option value="">-- Select --</option>
+                        @foreach (var culture in Model.Cultures)
+                        {
+                            <option value="@culture.Cid" selected="@(Model.CultureId == culture.Cid)">@culture.CultureName</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CultureId" class="text-danger validation-message"></span>
+                </div>
+            </div>
+
+            <h6 class="fw-bold text-muted mb-3 border-bottom pb-2 mt-4">Security</h6>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label asp-for="Password" class="form-label">Password *</label>
+                    <input asp-for="Password" type="password" class="form-control" required minlength="6" />
+                    <span asp-validation-for="Password" class="text-danger validation-message"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="ConfirmPassword" class="form-label">Confirm Password *</label>
+                    <input asp-for="ConfirmPassword" type="password" class="form-control" required minlength="6" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger validation-message"></span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-register">Create Account</button>
+
+            <div class="auth-link">
+                Already have an account? <a asp-page="/Login">Sign In here</a>
+            </div>
+        </form>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+            function filterCampuses(universityId) {
+                if (universityId) {
+                    window.location.href = `/Register?universityId=${universityId}`;
+                } else {
+                    window.location.href = `/Register`;
+                }
+            }
+    </script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+﻿@page
+@model VaSocApp_System.Pages.Treasurer.ContributionsModel
+@{
+    Layout = "_TreasurerLayout";
+    ViewData["Title"] = "Contributions";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>Contributions Tracker: @Model.SocietyName</h4>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @Model.SuccessMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Total Contributions Summary Card -->
+<div class="card shadow-sm border-0 border-start border-primary border-4 mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h6 class="text-muted mb-1">Total Contributions Received</h6>
+                <h2 class="mb-0 fw-bold text-primary">R @Model.TotalContributions.ToString("N2")</h2>
+            </div>
+            <i class="bi bi-piggy-bank-fill text-primary" style="font-size: 3rem;"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Add New Contribution Form -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-white">
+        <h5 class="mb-0 text-primary"><i class="bi bi-plus-circle"></i> Record New Contribution</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="PersonId" class="form-label fw-bold">Who made the contribution?</label>
+                <select asp-for="PersonId" class="form-select" asp-items="Model.PersonSelectList">
+                    <option value="">-- Select Student --</option>
+                </select>
+                <span asp-validation-for="PersonId" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Amount" class="form-label fw-bold">Amount (R)</label>
+                <input asp-for="Amount" class="form-control" type="number" step="0.01" placeholder="0.00" required />
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Record</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Contributions List Table -->
+<div class="card shadow-sm">
+    <div class="card-header bg-white">
+        <h5 class="mb-0 text-primary"><i class="bi bi-list-ul"></i> Contribution History</h5>
+    </div>
+    <div class="card-body p-0">
+        @if (!Model.ContributionList.Any())
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-coin text-muted" style="font-size: 3rem;"></i>
+                <p class="text-muted mt-2">No contributions recorded yet.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Contributor Name</th>
+                            <th>Username</th>
+                            <th class="text-end">Amount</th>
+                            <th class="text-center">Ref ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cont in Model.ContributionList)
+                        {
+                            <tr>
+                                <td>
+                                    @(cont.Person != null ? $"{cont.Person.FirstName} {cont.Person.LastName}" : "Unknown Person")
+                                </td>
+                                <td class="text-muted">@(cont.Person?.Username ?? "N/A")</td>
+                                <td class="text-end text-primary fw-bold">+ R @((cont.Amount ?? 0).ToString("N2"))</td>
+                                <td class="text-center"><span class="badge bg-light text-dark">#@cont.ContiId</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

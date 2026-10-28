@@ -1,0 +1,43 @@
+﻿@page
+@model VaSocApp_System.Pages.Secretary.CreateMeetingModel
+@{
+    Layout = "_SecretaryLayout";
+    ViewData["Title"] = "Schedule Meeting";
+}
+
+<h4>Schedule a New Meeting</h4>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">@Model.SuccessMessage</div>
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="post">
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label fw-bold">Meeting Title</label>
+                <input asp-for="Title" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label fw-bold">Description / Agenda</label>
+                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="Schedule" class="form-label fw-bold">Date</label>
+                    <input asp-for="Schedule" type="date" class="form-control" required />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="MeetingTime" class="form-label fw-bold">Time (e.g., 14:00)</label>
+                    <input asp-for="MeetingTime" type="time" class="form-control" />
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Meeting</button>
+            <a asp-page="/Secretary/Meetings" class="btn btn-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>

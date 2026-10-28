@@ -1,0 +1,85 @@
+﻿@page
+@model VaSocApp_System.Pages.Secretary.MembershipsModel
+@{
+    Layout = "_SecretaryLayout";
+    ViewData["Title"] = "Manage Memberships";
+}
+
+<h4>Members of @Model.SocietyName</h4>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">@Model.SuccessMessage</div>
+}
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+@if (!Model.MembersList.Any())
+{
+    <div class="alert alert-info">
+        There are no active or suspended members in your society yet.
+    </div>
+}
+else
+{
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Student Number</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var member in Model.MembersList)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@member.Student.Person.FirstName @member.Student.Person.LastName</strong><br>
+                                <small class="text-muted">@member.Student.Person.Email</small>
+                            </td>
+                            <td><span class="badge bg-secondary">@member.Student.StudentNumber</span></td>
+                            <td>
+                                @if (member.Status == "ACCEPTED")
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else if (member.Status == "SUSPENDED")
+                                {
+                                    <span class="badge bg-warning text-dark">Suspended</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <form method="post" class="d-inline">
+                                    <input type="hidden" name="membershipId" value="@member.MembershipId" />
+
+                                    @if (member.Status == "ACCEPTED")
+                                    {
+                                        <button type="submit" name="action" value="Suspend" class="btn btn-sm btn-warning me-1 text-dark" onclick="return confirm('Suspend this member? They will lose access to member-only features.');">
+                                            ⏸ Suspend
+                                        </button>
+                                    }
+                                    else if (member.Status == "SUSPENDED")
+                                    {
+                                        <button type="submit" name="action" value="Reinstate" class="btn btn-sm btn-success me-1" onclick="return confirm('Reinstate this member?');">
+                                            ✓ Reinstate
+                                        </button>
+                                    }
+
+                                    <button type="submit" name="action" value="Remove" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to permanently remove this member from the society?');">
+                                        🗑 Remove
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

@@ -1,0 +1,51 @@
+﻿@page
+@model VaSocApp_System.Pages.Chairperson.MembershipsModel
+@{
+    Layout = "_ChairpersonLayout";
+    ViewData["Title"] = "Memberships";
+}
+
+<h4>Memberships for @Model.SocietyName</h4>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Student Number</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var m in Model.MembersList)
+                    {
+                        <tr>
+                            <td>@m.Student.StudentNumber</td>
+                            <td>@m.Student.Person.FirstName @m.Student.Person.LastName</td>
+                            <td>@m.Student.Person.Email</td>
+                            <td>
+                                @if (m.Status == "ACCEPTED")
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else if (m.Status == "PENDING")
+                                {
+
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                }
+                                else
+                                {
+
+                                    <span class="badge bg-danger">@m.Status</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,52 @@
+﻿@page
+@model VaSocApp_System.Pages.RequestsModel
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "My Requests";
+}
+
+<h4>My Society Requests</h4>
+
+@if (!Model.MyRequests.Any())
+{
+    <div class="alert alert-info">You haven't requested to join any societies yet.</div>
+}
+else
+{
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Society Name</th>
+                        <th>Status</th>
+                        <th>Date Requested</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var req in Model.MyRequests)
+                    {
+                        <tr>
+                            <td>@(req.Society != null ? req.Society.SocietyName : "Unknown Society")</td>
+                            <td>
+                                @if (req.Status == "PENDING")
+                                {
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                }
+                                else if (req.Status == "ACCEPTED")
+                                {
+                                    <span class="badge bg-success">Accepted</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Rejected</span>
+                                }
+                            </td>
+                            <td>@req.RequestDate.ToString("dd MMM yyyy")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

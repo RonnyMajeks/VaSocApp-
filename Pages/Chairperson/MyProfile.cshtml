@@ -1,0 +1,66 @@
+﻿@page
+@model VaSocApp_System.Pages.Chairperson.MyProfileModel
+@{
+    Layout = "_ChairpersonLayout";
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>My Profile</h4>
+    <a asp-page="/Chairperson/EditProfile" class="btn btn-primary">
+        <i class="bi bi-pencil-square"></i> Edit Profile
+    </a>
+</div>
+
+@if (Model.PersonRecord != null)
+{
+    <div class="row">
+        <div class="col-md-8 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Personal Information</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th style="width: 30%;">Full Name</th>
+                            <td>@Model.PersonRecord.FirstName @Model.PersonRecord.LastName</td>
+                        </tr>
+                        <tr>
+                            <th>Email</th>
+                            <td>@Model.PersonRecord.Email</td>
+                        </tr>
+                        <tr>
+                            <th>Phone</th>
+                            <td>@(Model.PersonRecord.Phone ?? "Not provided")</td>
+                        </tr>
+                        <tr>
+                            <th>Username</th>
+                            <td>@Model.PersonRecord.Username</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Role Details</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th>Position</th>
+                            <td><span class="badge bg-primary">Chairperson</span></td>
+                        </tr>
+                        <tr>
+                            <th>Society</th>
+                            <td>@(Model.SocietyName ?? "Not assigned")</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}

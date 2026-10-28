@@ -1,0 +1,37 @@
+﻿@page
+@model VaSocApp_System.Pages.Chairperson.EventsModel
+@{
+    Layout = "_ChairpersonLayout";
+    ViewData["Title"] = "Events";
+}
+
+<h4>Events for @Model.SocietyName</h4>
+
+@if (!Model.EventsList.Any())
+{
+    <div class="alert alert-info">No events have been created yet.</div>
+}
+else
+{
+    <div class="row">
+        @foreach (var ev in Model.EventsList)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">@ev.Title</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            📅 @ev.EventDate.ToString("dd MMM yyyy")
+                            @if (ev.EventTime.HasValue)
+                            {
+                                @($" at {ev.EventTime.Value:hh\\:mm}")
+                            }
+                        </h6>
+                        <p class="card-text">@ev.Description</p>
+                        <p class="mb-0"><strong>📍 Venue:</strong> @(ev.Venue ?? "TBA")</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

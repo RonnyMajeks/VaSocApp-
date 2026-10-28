@@ -1,0 +1,82 @@
+﻿@page
+@model VaSocApp_System.Pages.SocietyDetailsModel
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = Model.SocietyInfo?.SocietyName ?? "Society Details";
+}
+
+@if (Model.SocietyInfo == null)
+{
+    <div class="alert alert-danger">Society not found.</div>
+}
+else
+{
+    <div class="mb-3">
+        <a asp-page="/Societies" class="btn btn-sm btn-secondary">← Back to Societies</a>
+    </div>
+
+    <!-- Success/Error Messages -->
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success">@Model.SuccessMessage</div>
+    }
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">@Model.ErrorMessage</div>
+    }
+
+    <!-- Society Briefing Card -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Step 2: Society Briefing</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <h2 class="text-primary">@Model.SocietyInfo.SocietyName</h2>
+                    <p class="lead">@Model.SocietyInfo.Description</p>
+
+                    <h5 class="mt-4">About This Society</h5>
+                    <p>
+                        This society is based at <strong>@Model.CampusName</strong>.
+                        Join us to participate in events, meet fellow students, and grow together!
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h6 class="card-title">Society Information</h6>
+                            <p class="mb-1"><strong>Campus:</strong> @Model.CampusName</p>
+                            <p class="mb-1"><strong>Society ID:</strong> @Model.SocietyInfo.SocietyId</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <!-- Step 3: Request to Join -->
+            @if (Model.AlreadyMember)
+            {
+                <div class="alert alert-success mb-0">
+                    ✓ You are already a member of this society!
+                </div>
+            }
+            else if (Model.AlreadyRequested)
+            {
+                <div class="alert alert-warning mb-0">
+                    ⏳ You have already requested to join. Please wait for approval.
+                </div>
+            }
+            else
+            {
+                <form method="post">
+                    <button type="submit" asp-page-handler="Request" asp-route-societyId="@Model.SocietyInfo.SocietyId"
+                            class="btn btn-success btn-lg"
+                            onclick="return confirm('Are you sure you want to request to join @Model.SocietyInfo.SocietyName?');">
+                        ✓ Request to Join This Society
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+}

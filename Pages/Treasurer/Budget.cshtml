@@ -1,0 +1,69 @@
+﻿@page
+@model VaSocApp_System.Pages.Treasurer.BudgetModel
+@{
+    Layout = "_TreasurerLayout";
+    ViewData["Title"] = "Budget";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>Budget Overview: @Model.SocietyName</h4>
+</div>
+
+<!-- Total Budget Summary Card -->
+<div class="card shadow-sm border-0 border-start border-success border-4 mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h6 class="text-muted mb-1">Total Allocated Budget</h6>
+                <h2 class="mb-0 fw-bold text-success">R @Model.TotalAllocated.ToString("N2")</h2>
+            </div>
+            <i class="bi bi-wallet2 text-success" style="font-size: 3rem;"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Budget Details Table -->
+<div class="card shadow-sm">
+    <div class="card-header bg-white">
+        <h5 class="mb-0 text-primary"><i class="bi bi-table"></i> Budget Allocations</h5>
+    </div>
+    <div class="card-body p-0">
+        @if (!Model.BudgetList.Any())
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                <p class="text-muted mt-2">No budget records found for this society.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Academic Year</th>
+                            <th>Amount Allocated</th>
+                            <th>Date Allocated</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var budget in Model.BudgetList)
+                        {
+                            <tr>
+                                <td class="fw-bold">@(budget.AcademicYear ?? "N/A")</td>
+                                <td class="text-success fw-bold">R @((budget.AmountAllocated ?? 0).ToString("N2"))</td>
+                                <td class="text-muted">
+                                    @(budget.DateAllocated?.ToString("dd MMM yyyy") ?? "N/A")
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">Approved</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

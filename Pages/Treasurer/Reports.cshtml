@@ -1,0 +1,112 @@
+﻿@page
+@model VaSocApp_System.Pages.Treasurer.ReportsModel
+@{
+    Layout = "_TreasurerLayout";
+    ViewData["Title"] = "Financial Reports";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>Financial Reports: @Model.SocietyName</h4>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @Model.SuccessMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Financial Summary Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card shadow-sm border-0 border-start border-success border-4 h-100">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Total Budget</h6>
+                <h3 class="mb-0 fw-bold text-success">R @Model.TotalBudget.ToString("N2")</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card shadow-sm border-0 border-start border-primary border-4 h-100">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Contributions</h6>
+                <h3 class="mb-0 fw-bold text-primary">R @Model.TotalContributions.ToString("N2")</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card shadow-sm border-0 border-start border-danger border-4 h-100">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Total Expenses</h6>
+                <h3 class="mb-0 fw-bold text-danger">R @Model.TotalExpenses.ToString("N2")</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card shadow-sm border-0 border-start border-dark border-4 h-100">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Net Balance</h6>
+                <h3 class="mb-0 fw-bold @(Model.NetBalance >= 0 ? "text-success" : "text-danger")">
+                    R @Model.NetBalance.ToString("N2")
+                </h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Submit Report Form -->
+    <div class="col-lg-5 mb-4">
+        <div class="card shadow-sm border-0 border-start border-warning border-4">
+            <div class="card-body">
+                <h5 class="card-title text-warning mb-3"><i class="bi bi-send"></i> Submit Report to Chairperson</h5>
+                <form method="post">
+                    <div class="mb-3">
+                        <label asp-for="ReportTitle" class="form-label fw-bold">Report Title</label>
+                        <input asp-for="ReportTitle" class="form-control" placeholder="e.g., October Financial Summary" required />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ReportMessage" class="form-label fw-bold">Report Details</label>
+                        <textarea asp-for="ReportMessage" class="form-control" rows="6" placeholder="Enter budget usage, contribution details, etc." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-warning w-100 text-white">Submit Report</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- History of Submitted Reports -->
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 text-primary"><i class="bi bi-clock-history"></i> Submitted Reports History</h5>
+            </div>
+            <div class="card-body p-0">
+                @if (!Model.SubmittedReports.Any())
+                {
+                    <div class="text-center py-5">
+                        <i class="bi bi-file-earmark-text text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-2">No reports submitted to the Chairperson yet.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="list-group list-group-flush">
+                        @foreach (var report in Model.SubmittedReports)
+                        {
+                            <div class="list-group-item p-4">
+                                <div class="d-flex w-100 justify-content-between mb-2">
+                                    <h6 class="mb-1 fw-bold text-warning">@(report.Title.Replace("[TREASURER REPORT] ", ""))</h6>
+                                    <small class="text-muted">@report.DatePosted.ToString("dd MMM yyyy")</small>
+                                </div>
+                                <p class="mb-1 text-dark">@report.Message</p>
+                                <small class="text-success"><i class="bi bi-check-circle"></i> Sent to Chairperson</small>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

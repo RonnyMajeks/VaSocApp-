@@ -1,0 +1,319 @@
+﻿@page
+@model VaSocApp_System.Pages.StudentAffairs.ReportsModel
+@{
+    Layout = "_StudentAffairsLayout";
+    ViewData["Title"] = "Reports & Analytics";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 no-print">
+    <h4 class="mb-0"><i class="bi bi-graph-up-arrow" style="color: #6f42c1;"></i> Reports & Analytics: @Model.CampusName</h4>
+    <div>
+        <a asp-page-handler="ExportExcel" class="btn btn-success me-2"><i class="bi bi-file-earmark-excel"></i> Export Excel</a>
+        <button onclick="window.print()" class="btn btn-danger"><i class="bi bi-file-earmark-pdf"></i> Save as PDF</button>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+<!-- Power BI Style Filter Slicers -->
+<div class="card shadow-sm border-0 mb-4 no-print">
+    <div class="card-body">
+        <h6 class="fw-bold text-muted mb-3"><i class="bi bi-funnel-fill"></i> Dashboard Filters (Track Trends)</h6>
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label small fw-bold">Filter by Faculty</label>
+                <select name="FilterFacultyId" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Faculties</option>
+                    <option value="1" selected="@(Model.FilterFacultyId == 1)">IT & Computer Science</option>
+                    <option value="2" selected="@(Model.FilterFacultyId == 2)">Commerce & Law</option>
+                    <option value="3" selected="@(Model.FilterFacultyId == 3)">Education</option>
+                    <option value="4" selected="@(Model.FilterFacultyId == 4)">Health Sciences</option>
+                </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-arrow-clockwise"></i> Apply Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Summary Statistics -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 border-start border-4 h-100" style="border-color: #6f42c1 !important;">
+            <div class="card-body">
+                <h6 class="text-muted mb-1 text-uppercase small">Total Active Members</h6>
+                <h2 class="mb-0 fw-bold" style="color: #6f42c1;">@Model.TotalActiveMembers.ToString("N0")</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 border-start border-4 h-100" style="border-color: #198754 !important;">
+            <div class="card-body">
+                <h6 class="text-muted mb-1 text-uppercase small">Total Societies</h6>
+                <h2 class="mb-0 fw-bold text-success">@Model.TotalSocieties</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 border-start border-4 h-100" style="border-color: #0dcaf0 !important;">
+            <div class="card-body">
+                <h6 class="text-muted mb-1 text-uppercase small">Cultures Represented</h6>
+                <h2 class="mb-0 fw-bold text-info">@Model.TotalCultures</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 border-start border-4 h-100" style="border-color: #ffc107 !important;">
+            <div class="card-body">
+                <h6 class="text-muted mb-1 text-uppercase small">Top Faculty</h6>
+                <h5 class="mb-0 fw-bold text-warning">@Model.TopFaculty</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Society Popularity Highlight (Most vs Least) -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 h-100 border-success" style="border-width: 2px !important;">
+            <div class="card-body d-flex align-items-center">
+                <div class="display-4 text-success me-3"><i class="bi bi-trophy-fill"></i></div>
+                <div>
+                    <h6 class="text-success fw-bold mb-1">MOST POPULAR SOCIETY</h6>
+                    <h3 class="mb-0 fw-bold">@Model.MostPopularSociety</h3>
+                    <small class="text-muted">@Model.MostPopularCount Active Members</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 h-100 border-danger" style="border-width: 2px !important;">
+            <div class="card-body d-flex align-items-center">
+                <div class="display-4 text-danger me-3"><i class="bi bi-graph-down-arrow"></i></div>
+                <div>
+                    <h6 class="text-danger fw-bold mb-1">LEAST POPULAR SOCIETY</h6>
+                    <h3 class="mb-0 fw-bold">@Model.LeastPopularSociety</h3>
+                    <small class="text-muted">@Model.LeastPopularCount Active Members (Needs Attention)</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row - Diversity, Faculty, Society, Year -->
+<div class="row mb-4">
+    <!-- Cultural Diversity Chart -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white">
+                <h6 class="mb-0 fw-bold" style="color: #6f42c1;"><i class="bi bi-people-fill"></i> Cultural Diversity Report</h6>
+            </div>
+            <div class="card-body d-flex justify-content-center align-items-center">
+                <canvas id="cultureChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Faculty Participation Chart -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white">
+                <h6 class="mb-0 fw-bold" style="color: #6f42c1;"><i class="bi bi-building"></i> Faculty Participation</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="facultyChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <!-- Society Popularity Chart -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white">
+                <h6 class="mb-0 fw-bold" style="color: #6f42c1;"><i class="bi bi-bar-chart-fill"></i> Society Membership Distribution</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="societyChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Year of Study Chart -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white">
+                <h6 class="mb-0 fw-bold" style="color: #6f42c1;"><i class="bi bi-mortarboard-fill"></i> Year of Study Participation</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="yearChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AI Automated Insights & Recommendations -->
+<div class="card shadow-sm border-0 mb-4" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-left: 5px solid #6f42c1 !important;">
+    <div class="card-body">
+        <h5 class="fw-bold mb-3" style="color: #6f42c1;">
+            <i class="bi bi-robot"></i> AI Automated Insights & Strategic Recommendations
+        </h5>
+        <div class="row">
+            @foreach (var insight in Model.AiInsights)
+            {
+                <div class="col-md-6 mb-3">
+                    <div class="d-flex">
+                        <i class="bi bi-lightbulb-fill text-warning me-2 mt-1"></i>
+                        <p class="mb-0 small" style="line-height: 1.6;">@Html.Raw(insight)</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Print Header (Only visible when printing/saving as PDF) -->
+<div class="print-header d-none">
+    <h2>VaSocApp - Diversity & Analytics Report</h2>
+    <p><strong>Campus:</strong> @Model.CampusName | <strong>Date:</strong> @DateTime.Now.ToString("dd MMMM yyyy") | <strong>Total Members:</strong> @Model.TotalActiveMembers</p>
+    <hr />
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        const diversityData = @Html.Raw(Model.DiversityChartData);
+        const facultyData = @Html.Raw(Model.FacultyChartData);
+        const societyData = @Html.Raw(Model.SocietyChartData);
+        const yearData = @Html.Raw(Model.YearChartData);
+
+        Chart.defaults.font.family = "'Segoe UI', 'Helvetica', 'Arial', sans-serif";
+        Chart.defaults.color = '#666';
+
+        // 1. Cultural Diversity Doughnut Chart
+        new Chart(document.getElementById('cultureChart'), {
+            type: 'doughnut',
+            data: {
+                labels: diversityData.map(d => d.label),
+                datasets: [{
+                    data: diversityData.map(d => d.value),
+                    backgroundColor: ['#6f42c1', '#198754', '#0dcaf0', '#ffc107', '#dc3545', '#fd7e14', '#20c997', '#6610f2', '#d63384', '#6c757d'],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+                }
+            }
+        });
+
+        // 2. Faculty Participation Bar Chart
+        new Chart(document.getElementById('facultyChart'), {
+            type: 'bar',
+            data: {
+                labels: facultyData.map(d => d.label),
+                datasets: [{
+                    label: 'Active Members',
+                    data: facultyData.map(d => d.value),
+                    backgroundColor: '#198754',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+            }
+        });
+
+        // 3. Society Horizontal Bar Chart
+        new Chart(document.getElementById('societyChart'), {
+            type: 'bar',
+            data: {
+                labels: societyData.map(d => d.label),
+                datasets: [{
+                    label: 'Active Members',
+                    data: societyData.map(d => d.value),
+                    backgroundColor: societyData.map((d, i) => i === 0 ? '#198754' : (i === societyData.length - 1 ? '#dc3545' : '#6f42c1')),
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } }
+            }
+        });
+
+        // 4. Year of Study Bar Chart
+        new Chart(document.getElementById('yearChart'), {
+            type: 'bar',
+            data: {
+                labels: yearData.map(d => d.label),
+                datasets: [{
+                    label: 'Active Members',
+                    data: yearData.map(d => d.value),
+                    backgroundColor: '#0dcaf0',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+            }
+        });
+    </script>
+
+    <style>
+        .print-header {
+            display: none;
+        }
+
+        @@media print {
+            .no-print {
+                display: none !important;
+            }
+
+            .print-header {
+                display: block !important;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            body {
+                background: white !important;
+                color: black !important;
+            }
+
+            .card {
+                border: 1px solid #ddd !important;
+                box-shadow: none !important;
+                break-inside: avoid;
+            }
+
+            .card-header {
+                background-color: #f8f9fa !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            canvas {
+                max-height: 300px !important;
+            }
+        }
+    </style>
+}

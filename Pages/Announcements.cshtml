@@ -1,0 +1,33 @@
+﻿@page
+@model VaSocApp_System.Pages.AnnouncementsModel
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Announcements";
+}
+
+<h4 class="mb-4">Latest Announcements</h4>
+
+@if (!Model.AnnouncementsList.Any())
+{
+    <div class="alert alert-info">There are no announcements at the moment.</div>
+}
+else
+{
+    <div class="row">
+        @foreach (var item in Model.AnnouncementsList)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                        <strong><i class="bi bi-megaphone-fill me-2"></i>@(item.Society != null ? item.Society.SocietyName : "General")</strong>
+                        <small>@item.DatePosted.ToString("dd MMM yyyy")</small>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">@item.Title</h5>
+                        <p class="card-text text-muted">@item.Message</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

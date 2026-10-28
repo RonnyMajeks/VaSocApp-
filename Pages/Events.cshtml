@@ -1,0 +1,72 @@
+﻿@page
+@model VaSocApp_System.Pages.EventsModel
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Events";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>Upcoming Events</h4>
+</div>
+
+@if (!Model.EventsList.Any())
+{
+    <div class="alert alert-info">
+        There are no upcoming events scheduled yet. Check back soon!
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var item in Model.EventsList)
+        {
+            // Determine if user is going or not going
+            var status = Model.UserRsvpStatus.ContainsKey(item.EventId) ? Model.UserRsvpStatus[item.EventId] : "";
+            var isGoing = status == "GOING";
+            var isNotGoing = status == "NOT_GOING";
+
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="card-title text-primary mb-1">@item.Title</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    Hosted by: @(item.Society != null ? item.Society.SocietyName : "Unknown Society")
+                                </h6>
+                            </div>
+                            <span class="badge bg-info text-dark">
+                                @item.EventDate.ToString("dd MMM yyyy")
+                            </span>
+                        </div>
+
+                        <p class="card-text mt-3">@item.Description</p>
+
+                        <ul class="list-unstyled mt-3 mb-0">
+                            <li><strong>📍 Venue:</strong> @(item.Venue ?? "TBA")</li>
+                            <li><strong>⏰ Time:</strong> @(item.EventTime?.ToString("hh\\:mm") ?? "TBA")</li>
+                        </ul>
+                    </div>
+
+                    <div class="card-footer bg-white border-top-0 d-flex gap-2">
+                        <!-- Going Button -->
+                        <form method="post" class="flex-grow-1">
+                            <button type="submit" asp-page-handler="Rsvp" asp-route-eventId="@item.EventId" asp-route-status="GOING"
+                                    class="btn w-100 @(isGoing ? "btn-success" : "btn-outline-success")">
+                                ✓ Going
+                            </button>
+                        </form>
+
+                        <!-- Not Going Button -->
+                        <form method="post" class="flex-grow-1">
+                            <button type="submit" asp-page-handler="Rsvp" asp-route-eventId="@item.EventId" asp-route-status="NOT_GOING"
+                                    class="btn w-100 @(isNotGoing ? "btn-danger" : "btn-outline-danger")">
+                                ✗ Not Going
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

@@ -1,0 +1,57 @@
+﻿@page
+@model VaSocApp_System.Pages.Secretary.EventsModel
+@{
+    Layout = "_SecretaryLayout";
+    ViewData["Title"] = "Manage Events";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>Events for @Model.SocietyName</h4>
+    <a asp-page="/Secretary/CreateEvent" class="btn btn-primary">+ Create New Event</a>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">@Model.SuccessMessage</div>
+}
+
+@if (!Model.EventsList.Any())
+{
+    <div class="alert alert-info">No events have been created yet.</div>
+}
+else
+{
+    <div class="row">
+        @foreach (var ev in Model.EventsList)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="card-title text-primary mb-1">@ev.Title</h5>
+                            @if (ev.IsMembersOnly)
+                            {
+                                <span class="badge bg-warning text-dark">Members Only</span>
+                            }
+                        </div>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            📅 @ev.EventDate.ToString("dd MMM yyyy")
+                            @if (ev.EventTime.HasValue)
+                            {
+                                @($" at {ev.EventTime.Value:hh\\:mm}")
+                            }
+                        </h6>
+                        <p class="card-text mt-2">@ev.Description</p>
+                        <p class="mb-0"><strong>📍 Venue:</strong> @(ev.Venue ?? "TBA")</p>
+                    </div>
+                    <div class="card-footer bg-white border-top-0 d-flex justify-content-end">
+                        <a asp-page="/Secretary/EditEvent" asp-route-id="@ev.EventId" class="btn btn-sm btn-outline-primary me-2">Edit/Reschedule</a>
+                        <form method="post">
+                            <button type="submit" asp-page-handler="Delete" asp-route-eventId="@ev.EventId" class="btn btn-sm btn-danger" onclick="return confirm('Delete this event?');">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

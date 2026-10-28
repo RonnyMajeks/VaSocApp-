@@ -1,0 +1,53 @@
+﻿@page
+@model VaSocApp_System.Pages.Secretary.CreateEventModel
+@{
+    Layout = "_SecretaryLayout";
+    ViewData["Title"] = "Create Event";
+}
+
+<h4>Create a New Event</h4>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">@Model.SuccessMessage</div>
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="post">
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label fw-bold">Event Title</label>
+                <input asp-for="Title" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label fw-bold">Description</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Venue" class="form-label fw-bold">Venue</label>
+                <input asp-for="Venue" class="form-control" />
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="EventDate" class="form-label fw-bold">Date</label>
+                    <input asp-for="EventDate" type="date" class="form-control" required />
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="EventTime" class="form-label fw-bold">Time</label>
+                    <input asp-for="EventTime" type="time" class="form-control" />
+                </div>
+            </div>
+
+            <div class="mb-4 form-check">
+                <input asp-for="IsMembersOnly" type="checkbox" class="form-check-input" />
+                <label asp-for="IsMembersOnly" class="form-check-label">Members Only Event?</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Event</button>
+            <a asp-page="/Secretary/Events" class="btn btn-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>

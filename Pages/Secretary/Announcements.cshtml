@@ -1,0 +1,46 @@
+﻿@page
+@model VaSocApp_System.Pages.Secretary.AnnouncementsModel
+@{
+    Layout = "_SecretaryLayout";
+    ViewData["Title"] = "Manage Announcements";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>Announcements for @Model.SocietyName</h4>
+    <a asp-page="/Secretary/CreateAnnouncement" class="btn btn-primary">+ Post New Announcement</a>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">@Model.SuccessMessage</div>
+}
+
+@if (!Model.AnnouncementsList.Any())
+{
+    <div class="alert alert-info">No announcements have been posted yet.</div>
+}
+else
+{
+    <div class="row">
+        @foreach (var item in Model.AnnouncementsList)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                        <strong>@item.Title</strong>
+                        <small>@item.DatePosted.ToString("dd MMM yyyy, hh:mm tt")</small>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">@item.Message</p>
+                    </div>
+                    <div class="card-footer bg-white border-top-0 d-flex justify-content-end">
+                        <a asp-page="/Secretary/EditAnnouncement" asp-route-id="@item.AnnouncementId" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+                        <form method="post">
+                            <button type="submit" asp-page-handler="Delete" asp-route-announcementId="@item.AnnouncementId" class="btn btn-sm btn-danger" onclick="return confirm('Delete this announcement?');">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

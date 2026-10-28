@@ -1,0 +1,69 @@
+﻿@page
+@model VaSocApp_System.Pages.Treasurer.TreasurerDashboardModel
+@{
+    Layout = "_TreasurerLayout";
+    ViewData["Title"] = "Treasurer Dashboard";
+}
+
+<div class="alert alert-primary text-center py-4 mt-3" style="background-color: #1a5fa8; color: white; border-radius: 8px;">
+    <h3 class="mb-0">Welcome, @Model.FullName!</h3>
+    @if (!string.IsNullOrEmpty(Model.SocietyName))
+    {
+        <p class="mb-0 mt-2">Treasurer of: <strong>@Model.SocietyName</strong></p>
+    }
+</div>
+
+<div class="card mt-4" style="border-left: 4px solid #1a5fa8;">
+    <div class="card-body">
+        <h4 class="card-title" style="color: #1a5fa8;">
+            <i class="bi bi-cash-stack"></i> Treasurer Dashboard
+        </h4>
+        <p class="text-muted">Manage the society's finances, track expenses, and report to the Chairperson.</p>
+
+        <div class="row mt-4">
+            <!-- View Budget -->
+            <div class="col-md-3 mb-3">
+                <a asp-page="/Treasurer/Budget" class="text-decoration-none text-dark">
+                    <div class="card h-100 text-center p-4 border" style="cursor: pointer; transition: transform 0.2s;">
+                        <i class="bi bi-wallet2" style="font-size: 50px; color: #198754;"></i>
+                        <h6 class="mt-3 fw-bold">View Budget</h6>
+                        <p class="text-muted small mb-0">Check allocated funds.</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Track Expenses -->
+            <div class="col-md-3 mb-3">
+                <a asp-page="/Treasurer/Expenses" class="text-decoration-none text-dark">
+                    <div class="card h-100 text-center p-4 border" style="cursor: pointer; transition: transform 0.2s;">
+                        <i class="bi bi-receipt-cutoff" style="font-size: 50px; color: #dc3545;"></i>
+                        <h6 class="mt-3 fw-bold">Track Expenses</h6>
+                        <p class="text-muted small mb-0">Record money spent.</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Contributions -->
+            <div class="col-md-3 mb-3">
+                <a asp-page="/Treasurer/Contributions" class="text-decoration-none text-dark">
+                    <div class="card h-100 text-center p-4 border" style="cursor: pointer; transition: transform 0.2s;">
+                        <i class="bi bi-coin" style="font-size: 50px; color: #ffc107;"></i>
+                        <h6 class="mt-3 fw-bold">Contributions</h6>
+                        <p class="text-muted small mb-0">Track member payments.</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Submit Report -->
+            <div class="col-md-3 mb-3">
+                <a asp-page="/Treasurer/Reports" class="text-decoration-none text-dark">
+                    <div class="card h-100 text-center p-4 border" style="cursor: pointer; transition: transform 0.2s;">
+                        <i class="bi bi-file-earmark-bar-graph" style="font-size: 50px; color: #0d6efd;"></i>
+                        <h6 class="mt-3 fw-bold">Submit Report</h6>
+                        <p class="text-muted small mb-0">Report to Chairperson.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

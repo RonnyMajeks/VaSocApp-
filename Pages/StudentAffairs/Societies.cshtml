@@ -1,0 +1,232 @@
+﻿@page
+@model VaSocApp_System.Pages.StudentAffairs.SocietiesModel
+@{
+    Layout = "_StudentAffairsLayout";
+    ViewData["Title"] = "Societies Management";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0"><i class="bi bi-diagram-3" style="color: #6f42c1;"></i> Societies Management</h4>
+    <button class="btn text-white" style="background-color: #6f42c1;" data-bs-toggle="modal" data-bs-target="#addSocietyModal">
+        <i class="bi bi-plus-circle"></i> Register New Society
+    </button>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success alert-dismissible fade show">@Model.SuccessMessage<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger alert-dismissible fade show">@Model.ErrorMessage<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white">
+        <h5 class="mb-0" style="color: #6f42c1;"><i class="bi bi-list-ul"></i> Registered Societies</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Society Name</th>
+                        <th>Campus</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var s in Model.SocietiesList)
+                    {
+                        <tr>
+                            <td class="ps-4 fw-bold">@s.SocietyName</td>
+                            <td><span class="badge bg-light text-dark border">@s.Campus?.CampusName</span></td>
+                            <td class="text-muted small">@(s.Description ?? "No description provided")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- 3-Step Wizard Modal -->
+<div class="modal fade" id="addSocietyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header text-white" style="background: linear-gradient(135deg, #6f42c1 0%, #4e2a84 100%);">
+                <h5 class="modal-title"><i class="bi bi-stars"></i> Register New Society — Step @Model.CurrentStep of 3</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="progress mb-4" style="height: 6px;">
+                    <div class="progress-bar" style="width: @((Model.CurrentStep * 100 / 3))%; background-color: #6f42c1;"></div>
+                </div>
+
+                <!-- novalidate stops browser from blocking the Next button -->
+                <form method="post" novalidate>
+                    <input type="hidden" asp-for="CurrentStep" />
+
+                    <!-- ================= STEP 1 ================= -->
+                    @if (Model.CurrentStep == 1)
+                    {
+                        <h6 class="fw-bold mb-3" style="color: #6f42c1;"><i class="bi bi-building"></i> Society Details</h6>
+                        <div class="mb-3">
+                            <label asp-for="SocietyName" class="form-label fw-bold">Society Name *</label>
+                            <input asp-for="SocietyName" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-bold">Description</label>
+                            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="CampusId" class="form-label fw-bold">Campus</label>
+                            <select asp-for="CampusId" asp-items="@(new SelectList(Model.CampusesList, "CampusId", "CampusName"))" class="form-select">
+                                <option value="">-- Select Campus --</option>
+                            </select>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" asp-page-handler="Next" class="btn text-white" style="background-color: #6f42c1;">Next: Assign Leaders <i class="bi bi-arrow-right"></i></button>
+                        </div>
+                    }
+
+                    <!-- ================= STEP 2 ================= -->
+                    @if (Model.CurrentStep == 2)
+                    {
+                        <input type="hidden" asp-for="SocietyName" />
+                        <input type="hidden" asp-for="Description" />
+                        <input type="hidden" asp-for="CampusId" />
+
+                        <div class="alert alert-info small mb-3"><i class="bi bi-info-circle"></i> <strong>Note:</strong> Default password for all leaders: <strong>Password123!</strong></div>
+
+                        <div class="card mb-3 border-0" style="background-color: #f8f9fa;">
+                            <div class="card-header text-white fw-bold" style="background-color: #6f42c1;"><i class="bi bi-person-badge"></i> Chairperson</div>
+                            <div class="card-body">
+                                <div class="row g-2">
+                                    <div class="col-md-6"><label class="form-label small fw-bold">First Name</label><input asp-for="ChairFirstName" class="form-control form-control-sm" /></div>
+                                    <div class="col-md-6"><label class="form-label small fw-bold">Last Name</label><input asp-for="ChairLastName" class="form-control form-control-sm" /></div>
+                                    <div class="col-md-6"><label class="form-label small fw-bold">Email</label><input asp-for="ChairEmail" class="form-control form-control-sm" type="text" /></div>
+                                    <div class="col-md-6"><label class="form-label small fw-bold">Username</label><input asp-for="ChairUsername" class="form-control form-control-sm" /></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3 border-0" style="background-color: #f8f9fa;">
+                            <div class="card-header text-white fw-bold" style="background-color: #198754;"><i class="bi bi-person-lines-fill"></i> Secretary</div>
+                            <div class="card-body">
+                                <div class="row g-2">
+                                    <div class="col-md-6"><label class="form-label small fw-bold">First Name</label><input asp-for="SecFirstName" class="form-control form-control-sm" /></div>
+                                    <div class="col-md-6"><label class="form-label small fw-bold">Last Name</label><input asp-for="SecLastName" class="form-control form-control-sm" /></div>
+                                    <div class="col-md-6"><label class="form-label small fw-bold">Email</label><input asp-for="SecEmail" class="form-control form-control-sm" type="text" /></div>
+                                    <div class="col-md-6"><label class="form-label small fw-bold">Username</label><input asp-for="SecUsername" class="form-control form-control-sm" /></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3 border-0" style="background-color: #f8f9fa;">
+                            <div class="card-header text-dark fw-bold" style="background-color: #ffc107;"><i class="bi bi-cash-coin"></i> Treasurer</div>
+                            <div class="card-body">
+                                <div class="row g-2">
+                                    <div class="col-md-6"><label class="form-label small fw-bold">First Name</label><input asp-for="TreasFirstName" class="form-control form-control-sm" /></div>
+                                    <div class="col-md-6"><label class="form-label small fw-bold">Last Name</label><input asp-for="TreasLastName" class="form-control form-control-sm" /></div>
+                                    <div class="col-md-6"><label class="form-label small fw-bold">Email</label><input asp-for="TreasEmail" class="form-control form-control-sm" type="text" /></div>
+                                    <div class="col-md-6"><label class="form-label small fw-bold">Username</label><input asp-for="TreasUsername" class="form-control form-control-sm" /></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" asp-page-handler="Back" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</button>
+                            <button type="submit" asp-page-handler="Next" class="btn text-white" style="background-color: #6f42c1;">Next: Review <i class="bi bi-arrow-right"></i></button>
+                        </div>
+                    }
+
+
+                    @if (Model.CurrentStep == 3)
+                    {
+                        <input type="hidden" asp-for="SocietyName" />
+                        <input type="hidden" asp-for="Description" />
+                        <input type="hidden" asp-for="CampusId" />
+                        <input type="hidden" asp-for="ChairFirstName" />
+                        <input type="hidden" asp-for="ChairLastName" />
+                        <input type="hidden" asp-for="ChairEmail" />
+                        <input type="hidden" asp-for="ChairUsername" />
+                        <input type="hidden" asp-for="SecFirstName" />
+                        <input type="hidden" asp-for="SecLastName" />
+                        <input type="hidden" asp-for="SecEmail" />
+                        <input type="hidden" asp-for="SecUsername" />
+                        <input type="hidden" asp-for="TreasFirstName" />
+                        <input type="hidden" asp-for="TreasLastName" />
+                        <input type="hidden" asp-for="TreasEmail" />
+                        <input type="hidden" asp-for="TreasUsername" />
+
+                        <div class="alert alert-warning small mb-3"><i class="bi bi-exclamation-triangle"></i> Please review all details carefully.</div>
+
+                        <div class="card mb-3 border-0" style="background-color: #f8f9fa;">
+                            <div class="card-header fw-bold" style="color: #6f42c1;">Society Details</div>
+                            <div class="card-body small">
+                                <p class="mb-1"><strong>Name:</strong> @Model.SocietyName</p>
+                                <p class="mb-1"><strong>Description:</strong> @(Model.Description ?? "N/A")</p>
+                                <!-- Uses SelectedCampusName directly -->
+                                <p class="mb-0"><strong>Campus:</strong> @(Model.SelectedCampusName ?? "N/A")</p>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <div class="card h-100 border-0" style="background-color: #f8f9fa;">
+                                    <div class="card-header small fw-bold" style="color: #6f42c1;">Chairperson</div>
+                                    <div class="card-body small">
+                                        <p class="mb-1 fw-bold">@Model.ChairFirstName @Model.ChairLastName</p>
+                                        <p class="mb-1 text-muted">@Model.ChairEmail</p>
+                                        <p class="mb-0">@Model.ChairUsername</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card h-100 border-0" style="background-color: #f8f9fa;">
+                                    <div class="card-header small fw-bold" style="color: #198754;">Secretary</div>
+                                    <div class="card-body small">
+                                        <p class="mb-1 fw-bold">@Model.SecFirstName @Model.SecLastName</p>
+                                        <p class="mb-1 text-muted">@Model.SecEmail</p>
+                                        <p class="mb-0">@Model.SecUsername</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card h-100 border-0" style="background-color: #f8f9fa;">
+                                    <div class="card-header small fw-bold" style="color: #b38600;">Treasurer</div>
+                                    <div class="card-body small">
+                                        <p class="mb-1 fw-bold">@Model.TreasFirstName @Model.TreasLastName</p>
+                                        <p class="mb-1 text-muted">@Model.TreasEmail</p>
+                                        <p class="mb-0">@Model.TreasUsername</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" asp-page-handler="Back" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</button>
+                            <button type="submit" asp-page-handler="Submit" class="btn btn-success"><i class="bi bi-check-lg"></i> Confirm & Register Society</button>
+                        </div>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        @if (Model.CurrentStep > 1)
+            {
+                <text>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        var modalElement = document.getElementById('addSocietyModal');
+                        var modal = new bootstrap.Modal(modalElement);
+                        modal.show();
+                    });
+            </text>
+        }
+    </script>
+}

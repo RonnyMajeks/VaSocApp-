@@ -1,0 +1,162 @@
+﻿@page
+@model VaSocApp_System.Pages.Secretary.RecordsModel
+@{
+    Layout = "_SecretaryLayout";
+    ViewData["Title"] = "Records & Analytics";
+}
+
+<!-- Include Chart.js from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>Records & Analytics for @Model.SocietyName</h4>
+    <form method="post">
+        <button type="submit" asp-page-handler="DownloadCsv" class="btn btn-success">
+            📥 Submit Report to Chairperson (CSV)
+        </button>
+    </form>
+</div>
+
+<!-- Analytics Charts Row -->
+<div class="row mb-5">
+    <!-- Pie Chart: Member Status -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Membership Status Overview</h5>
+            </div>
+            <div class="card-body d-flex justify-content-center align-items-center">
+                <div style="width: 300px; height: 300px;">
+                    <canvas id="memberStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bar Chart: Event Engagement -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Event RSVP Analytics</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="eventRsvpChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Interactive Records Table -->
+<div class="card shadow-sm">
+    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Detailed Membership Records</h5>
+        <span class="badge bg-light text-dark">@Model.AllMembers.Count Total Records</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Student Number</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Request Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var m in Model.AllMembers)
+                    {
+                        <tr>
+                            <td><span class="badge bg-secondary">@m.Student.StudentNumber</span></td>
+                            <td><strong>@m.Student.Person.FirstName @m.Student.Person.LastName</strong></td>
+                            <td>@m.Student.Person.Email</td>
+                            <td>
+                                @if (m.Status == "ACCEPTED")
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else if (m.Status == "SUSPENDED")
+                                {
+
+                                    <span class="badge bg-warning text-dark">Suspended</span>
+                                }
+                                else if (m.Status == "PENDING")
+                                {
+
+                                    <span class="badge bg-info text-dark">Pending</span>
+                                }
+                                else
+                                {
+
+                                    <span class="badge bg-danger">Rejected</span>
+                                }
+                            </td>
+                            <td>@m.RequestDate.ToString("dd MMM yyyy")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript to Render Charts -->
+<script>
+    // Data passed from C# backend
+    const acceptedCount = @Model.TotalAccepted;
+    const suspendedCount = @Model.TotalSuspended;
+    const pendingCount = @Model.TotalPending;
+
+    // 1. Render Pie Chart
+    const ctxPie = document.getElementById('memberStatusChart').getContext('2d');
+    new Chart(ctxPie, {
+    type: 'doughnut',
+    data: {
+    labels: ['Active', 'Suspended', 'Pending'],
+    datasets: [{
+    data: [acceptedCount, suspendedCount, pendingCount],
+    backgroundColor: ['#198754', '#ffc107', '#0dcaf0'],
+    borderWidth: 1
+    }]
+    },
+    options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+    legend: { position: 'bottom' }
+    }
+    }
+    });
+
+    // 2. Render Bar Chart for Events
+    const eventTitles = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.EventRsvps.Select(e => e.EventTitle)));
+    const goingCounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.EventRsvps.Select(e => e.GoingCount)));
+    const notGoingCounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.EventRsvps.Select(e => e.NotGoingCount)));
+
+    const ctxBar = document.getElementById('eventRsvpChart').getContext('2d');
+    new Chart(ctxBar, {
+    type: 'bar',
+    data: {
+    labels: eventTitles,
+    datasets: [
+    {
+    label: 'Going',
+    data: goingCounts,
+    backgroundColor: '#198754'
+    },
+    {
+    label: 'Not Going',
+    data: notGoingCounts,
+    backgroundColor: '#dc3545'
+    }
+    ]
+    },
+    options: {
+    responsive: true,
+    scales: {
+    y: { beginAtZero: true, ticks: { stepSize: 1 } }
+    }
+    }
+    });
+</script>

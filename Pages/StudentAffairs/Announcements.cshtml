@@ -1,0 +1,89 @@
+﻿@page
+@model VaSocApp_System.Pages.StudentAffairs.AnnouncementsModel
+@{
+    Layout = "_StudentAffairsLayout";
+    ViewData["Title"] = "Announcements";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0"><i class="bi bi-megaphone" style="color: #6f42c1;"></i> Campus Notices</h4>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle"></i> @Model.SuccessMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        <i class="bi bi-exclamation-triangle"></i> @Model.ErrorMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow-sm border-0 border-start border-4" style="border-color: #6f42c1 !important;">
+            <div class="card-body">
+                <h5 class="card-title fw-bold mb-3" style="color: #6f42c1;">
+                    <i class="bi bi-send"></i> Send Campus Notice
+                </h5>
+                <form method="post">
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label small fw-bold">Title *</label>
+                        <input asp-for="Title" class="form-control" placeholder="e.g., AGM Reminder" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Message" class="form-label small fw-bold">Message *</label>
+                        <textarea asp-for="Message" class="form-control" rows="4" placeholder="Enter the details of the notice..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn text-white w-100" style="background-color: #6f42c1;">
+                        <i class="bi bi-send-fill"></i> Broadcast to All Societies
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="mb-0 fw-bold" style="color: #6f42c1;"><i class="bi bi-clock-history"></i> Recent Campus Notices</h5>
+            </div>
+            <div class="card-body p-0">
+                @if (!Model.AnnouncementsList.Any())
+                {
+                    <div class="text-center py-5">
+                        <i class="bi bi-chat-square-text text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-2">No campus notices have been sent yet.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="list-group list-group-flush">
+                        @foreach (var item in Model.AnnouncementsList.Take(1))
+                        {
+                            <div class="list-group-item p-4">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="mb-0 fw-bold text-dark">@item.Title</h6>
+                                    <small class="text-muted ms-2">@item.DatePosted.ToString("dd MMM yyyy, HH:mm")</small>
+                                </div>
+                                <p class="mb-2 text-muted small">@item.Message</p>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-primary text-white">
+                                        <i class="bi bi-globe"></i> Campus-Wide Broadcast
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

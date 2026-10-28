@@ -1,0 +1,214 @@
+﻿@page
+@model VaSocApp_System.Pages.Chairperson.AnalyticsModel
+@{
+    Layout = "_ChairpersonLayout";
+    ViewData["Title"] = "Analytics";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0"><i class="bi bi-graph-up-arrow" style="color: #1a5fa8;"></i> Society Analytics & Insights</h4>
+    <span class="badge bg-primary fs-6">@Model.SocietyName</span>
+</div>
+
+
+<div class="row g-4 mb-4">
+    <div class="col-md-2">
+        <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #198754 !important;">
+            <div class="card-body text-center">
+                <i class="bi bi-people-fill" style="font-size: 32px; color: #198754;"></i>
+                <h6 class="text-muted mb-1 small text-uppercase mt-2">Total Members</h6>
+                <h2 class="mb-0 fw-bold text-success">@Model.TotalMembers</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #ffc107 !important;">
+            <div class="card-body text-center">
+                <i class="bi bi-hourglass-split" style="font-size: 32px; color: #ffc107;"></i>
+                <h6 class="text-muted mb-1 small text-uppercase mt-2">Pending</h6>
+                <h2 class="mb-0 fw-bold" style="color: #b38600;">@Model.PendingRequests</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #0dcaf0 !important;">
+            <div class="card-body text-center">
+                <i class="bi bi-calendar-event-fill" style="font-size: 32px; color: #0dcaf0;"></i>
+                <h6 class="text-muted mb-1 small text-uppercase mt-2">Events</h6>
+                <h2 class="mb-0 fw-bold text-info">@Model.TotalEvents</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #6f42c1 !important;">
+            <div class="card-body text-center">
+                <i class="bi bi-megaphone-fill" style="font-size: 32px; color: #6f42c1;"></i>
+                <h6 class="text-muted mb-1 small text-uppercase mt-2">Announcements</h6>
+                <h2 class="mb-0 fw-bold" style="color: #6f42c1;">@Model.TotalAnnouncements</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #dc3545 !important;">
+            <div class="card-body text-center">
+                <i class="bi bi-check-circle-fill" style="font-size: 32px; color: #dc3545;"></i>
+                <h6 class="text-muted mb-1 small text-uppercase mt-2">Acceptance Rate</h6>
+                <h2 class="mb-0 fw-bold text-danger">@Model.AcceptanceRate%</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #0d6efd !important;">
+            <div class="card-body text-center">
+                <i class="bi bi-lightning-charge-fill" style="font-size: 32px; color: #0d6efd;"></i>
+                <h6 class="text-muted mb-1 small text-uppercase mt-2">Activity Score</h6>
+                <h2 class="mb-0 fw-bold text-primary">@Model.ActivityScore</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-0 pt-3">
+                <h6 class="mb-0 fw-bold" style="color: #1a5fa8;">
+                    <i class="bi bi-bar-chart-fill"></i> Members by Year of Study
+                </h6>
+            </div>
+            <div class="card-body">
+                <canvas id="yearChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-0 pt-3">
+                <h6 class="mb-0 fw-bold" style="color: #1a5fa8;">
+                    <i class="bi bi-pie-chart-fill"></i> Members by Culture
+                </h6>
+            </div>
+            <div class="card-body">
+                <canvas id="cultureChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row g-4">
+    <div class="col-md-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 pt-3">
+                <h6 class="mb-0 fw-bold" style="color: #1a5fa8;">
+                    <i class="bi bi-graph-up"></i> Society Activity Timeline (Last 6 Months)
+                </h6>
+                <small class="text-muted">Track events, meetings, and announcements over time</small>
+            </div>
+            <div class="card-body">
+                <canvas id="activityChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <script>
+       
+        const yearData = @Html.Raw(Model.YearChartData);
+        const cultureData = @Html.Raw(Model.CultureChartData);
+        const activityData = @Html.Raw(Model.ActivityChartData);
+
+        
+        const yearCtx = document.getElementById('yearChart').getContext('2d');
+        new Chart(yearCtx, {
+            type: 'bar',
+            data: {
+                labels: yearData.map(d => d.label),
+                datasets: [{
+                    label: 'Active Members',
+                    data: yearData.map(d => d.value),
+                    backgroundColor: '#1a5fa8',
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                }
+            }
+        });
+
+        
+        const cultureCtx = document.getElementById('cultureChart').getContext('2d');
+        new Chart(cultureCtx, {
+            type: 'doughnut',
+            data: {
+                labels: cultureData.map(d => d.label),
+                datasets: [{
+                    data: cultureData.map(d => d.value),
+                    backgroundColor: ['#1a5fa8', '#6f42c1', '#198754', '#dc3545', '#ffc107', '#0dcaf0', '#fd7e14', '#6610f2', '#20c997', '#d63384'],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+       
+        const activityCtx = document.getElementById('activityChart').getContext('2d');
+        new Chart(activityCtx, {
+            type: 'bar',
+            data: {
+                labels: activityData.map(d => d.label),
+                datasets: [
+                    {
+                        label: 'Events',
+                        data: activityData.map(d => d.events),
+                        backgroundColor: '#0dcaf0',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Meetings',
+                        data: activityData.map(d => d.meetings),
+                        backgroundColor: '#6f42c1',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Announcements',
+                        data: activityData.map(d => d.announcements),
+                        backgroundColor: '#198754',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' }
+                },
+                scales: {
+                    y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                }
+            }
+        });
+    </script>
+}

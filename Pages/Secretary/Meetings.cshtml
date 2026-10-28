@@ -1,0 +1,52 @@
+﻿@page
+@model VaSocApp_System.Pages.Secretary.MeetingsModel
+@{
+    Layout = "_SecretaryLayout";
+    ViewData["Title"] = "Meetings";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>Meetings for @Model.SocietyName</h4>
+    <a asp-page="/Secretary/CreateMeeting" class="btn btn-primary">+ Schedule New Meeting</a>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">@Model.SuccessMessage</div>
+}
+
+@if (!Model.MeetingsList.Any())
+{
+    <div class="alert alert-info">No meetings have been scheduled yet.</div>
+}
+else
+{
+    <div class="row">
+        @foreach (var meeting in Model.MeetingsList)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">@meeting.Title</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            📅 @meeting.Schedule?.ToString("dd MMM yyyy")
+                            @if (!string.IsNullOrEmpty(meeting.MeetingTime))
+                            {
+                                @($"at {meeting.MeetingTime}")
+                            }
+                        </h6>
+                        <p class="card-text">@meeting.Description</p>
+                    </div>
+                    <div class="card-footer bg-white border-top-0 d-flex justify-content-end">
+                        <!-- Edit button (We will build this next) -->
+                        <a asp-page="/Secretary/EditMeeting" asp-route-id="@meeting.Meetid" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+
+                        <form method="post">
+                            <button type="submit" asp-page-handler="Delete" asp-route-meetId="@meeting.Meetid" class="btn btn-sm btn-danger" onclick="return confirm('Delete this meeting?');">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

@@ -1,0 +1,65 @@
+﻿@page
+@model VaSocApp_System.Pages.Secretary.RequestsModel
+@{
+    Layout = "_SecretaryLayout";
+    ViewData["Title"] = "Manage Requests";
+}
+
+<h4>Membership Requests for @Model.SocietyName</h4>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">@Model.SuccessMessage</div>
+}
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+@if (!Model.PendingRequests.Any())
+{
+    <div class="alert alert-info">
+        There are no pending membership requests for your society at this time.
+    </div>
+}
+else
+{
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Student Number</th>
+                        <th>Request Date</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var req in Model.PendingRequests)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@req.Student.Person.FirstName @req.Student.Person.LastName</strong><br>
+                                <small class="text-muted">@req.Student.Person.Email</small>
+                            </td>
+                            <td><span class="badge bg-secondary">@req.Student.StudentNumber</span></td>
+                            <td>@req.RequestDate.ToString("dd MMM yyyy, hh:mm tt")</td>
+                            <td class="text-end">
+                                <form method="post" class="d-inline">
+                                    <input type="hidden" name="membershipId" value="@req.MembershipId" />
+                                    <button type="submit" name="action" value="Approve" class="btn btn-sm btn-success me-1" onclick="return confirm('Are you sure you want to approve this student?');">
+                                        ✓ Approve
+                                    </button>
+                                    <button type="submit" name="action" value="Decline" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to decline this student?');">
+                                        ✗ Decline
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
